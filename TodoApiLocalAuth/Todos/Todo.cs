@@ -1,7 +1,8 @@
 namespace TodoApiLocalAuth.Todos;
 public record Todo
 {
-    public int Id { get; init; }
-    public string? Title { get; init; }
-    public bool IsDone { get; init; } = false;
+    public Guid Id { get; init; }
+    public string? Title { get; set; }
+    public bool IsDone { get; set; } = false;
+    public Guid UserId { get; init; }
 }
