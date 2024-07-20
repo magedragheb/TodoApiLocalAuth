@@ -1,42 +1,46 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TodoApiLocalAuth.Data;
 
 namespace TodoApiLocalAuth.Todos;
 
-public class TodosService
+public class TodosService(IMapper mapper)
 {
-    public static async Task<IResult> GetAllTodos(TodoDbContext db)
-    => TypedResults.Ok(await db.Todos.ToListAsync());
+    public async Task<IResult> GetAllTodos(TodoDbContext db)
+    => TypedResults.Ok(await db.Todos.Select(t => mapper.Map<TodoDTO>(t)).ToListAsync());
 
-    public static async Task<IResult> GetDoneTodos(TodoDbContext db)
+    public async Task<IResult> GetDoneTodos(TodoDbContext db)
         => TypedResults.Ok(await db.Todos.Where(t => t.IsDone)
+        .Select(t => mapper.Map<TodoDTO>(t))
         .ToListAsync());
 
-    public static async Task<IResult> GetTodo(TodoDbContext db, string id)
+    public async Task<IResult> GetTodo(TodoDbContext db, string id)
         => await db.Todos.FindAsync(id)
-        is Todo todo ? Results.Ok(todo) : TypedResults.NotFound(id);
+        is Todo todo ? Results.Ok(mapper.Map<TodoDTO>(todo)) : TypedResults.NotFound(id);
 
-    public static async Task<IResult> CreateTodo(TodoDbContext db, TodoDTO todo)
+    public async Task<IResult> CreateTodo(TodoDbContext db, TodoDTO todo)
     {
-        var item = new Todo { IsDone = todo.IsDone, Title = todo.Title };
+        var item = mapper.Map<Todo>(todo);
+        // var item = new Todo { Title = todo.Title, IsDone = todo.IsDone };
         db.Todos.Add(item);
         await db.SaveChangesAsync();
         return TypedResults.Created($"/todos/{item.Id}", item);
     }
 
-    public static async Task<IResult> UpdateTodo(TodoDbContext db, TodoDTO input, string id)
+    public async Task<IResult> UpdateTodo(TodoDbContext db, TodoDTO input, string id)
     {
         var todo = await db.Todos.FindAsync(id);
         if (todo is null) return TypedResults.NotFound();
 
-        todo.Title = input.Title;
-        todo.IsDone = input.IsDone;
+        todo = mapper.Map<Todo>(input);
+        // todo.Title = input.Title;
+        // todo.IsDone = input.IsDone;
 
         await db.SaveChangesAsync();
         return TypedResults.NoContent();
     }
 
-    public static async Task<IResult> DeleteTodo(TodoDbContext db, string id)
+    public async Task<IResult> DeleteTodo(TodoDbContext db, string id)
     {
         if (await db.Todos.FindAsync(id) is Todo todo)
         {

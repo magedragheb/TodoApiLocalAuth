@@ -7,14 +7,15 @@ using TodoApiLocalAuth.Data;
 using TodoApiLocalAuth.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<TodoDbContext>(options =>
     options.UseSqlite("Data Source=Data/todo.db"));
 builder.Services.Configure<JsonOptions>(options =>
     options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
