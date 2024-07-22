@@ -1,11 +1,11 @@
-using TodoApiLocalAuth.Todos;
+using TodoApiLocalAuth.Todos.Entity;
 
-namespace TodoApiLocalAuth.Users;
+namespace TodoApiLocalAuth.Users.Entity;
 
-public class User
+public record User
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
     public required string UserName { get; set; }
-    public required string PasswordHash { get; set; } = "";
+    public required string PasswordHash { get; set; }
     public List<Todo> Todos { get; set; } = [];
 }
