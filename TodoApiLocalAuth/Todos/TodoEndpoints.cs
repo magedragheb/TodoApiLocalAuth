@@ -8,21 +8,23 @@ public class TodoEndpoints : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/todos");
+        var group = routes.MapGroup("/api/todos")
+        .WithTags("Todos")
+        .WithOpenApi();
 
-        group.WithDisplayName("Todos");
+        group.MapGet("/", (ITodoService service) => service.GetAllTodos())
+        .WithSummary("Gets all todos");
 
-        group.MapGet("/", (ITodoService service) => service.GetAllTodos());
+        group.MapGet("/done", (ITodoService service) => service.GetDoneTodos())
+        .WithSummary("Gets all done todos");
 
-        group.MapGet("/done", (ITodoService service) => service.GetDoneTodos());
+        group.MapGet("/{id}", (ITodoService service, Guid id) => service.GetTodo(id)).WithSummary("Gets a todo by id");
 
-        group.MapGet("/{id}", (ITodoService service, Guid id) => service.GetTodo(id));
+        group.MapPost("/", (ITodoService service, TodoDTO todoDto) => service.CreateTodo(todoDto)).WithSummary("Creates a new todo");
 
-        group.MapPost("/", (ITodoService service, TodoDTO todoDto) => service.CreateTodo(todoDto));
+        group.MapPut("/{id}", (ITodoService service, Guid id, TodoDTO todoDto) => service.UpdateTodo(id, todoDto)).WithSummary("Updates a todo");
 
-        group.MapPut("/{id}", (ITodoService service, Guid id, TodoDTO todoDto) => service.UpdateTodo(id, todoDto));
-
-        group.MapDelete("/{id}", (ITodoService service, Guid id) => service.DeleteTodo(id));
+        group.MapDelete("/{id}", (ITodoService service, Guid id) => service.DeleteTodo(id)).WithSummary("Deletes a todo");
     }
 
 }

@@ -8,14 +8,14 @@ public class UserEndpoints : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/users");
+        var group = routes.MapGroup("/api/users")
+        .WithTags("Users")
+        .WithOpenApi();
 
-        group.WithDisplayName("Users");
+        group.MapPost("/signup", (IUserService service, UserDTO userDto) => service.SignUp(userDto)).WithSummary("Creates a new user and logs in");
 
-        group.MapPost("/signup", (IUserService service, UserDTO userDto) => service.SignUp(userDto));
+        group.MapPost("/signin", (IUserService service, UserDTO userDto) => service.SignIn(userDto)).WithSummary("Logs in");
 
-        group.MapPost("/signin", (IUserService service, UserDTO userDto) => service.SignIn(userDto));
-
-        group.MapPost("/signout", (IUserService service) => service.SignOut());
+        group.MapPost("/signout", (IUserService service) => service.SignOut()).WithSummary("Logs out");
     }
 }
