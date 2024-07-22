@@ -9,6 +9,7 @@ public class TodoEndpoints : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/todos")
+        .RequireAuthorization(a => a.RequireAuthenticatedUser())
         .WithTags("Todos")
         .WithOpenApi();
 

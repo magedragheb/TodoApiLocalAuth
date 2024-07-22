@@ -16,6 +16,8 @@ public class UserEndpoints : IEndpoint
 
         group.MapPost("/signin", (IUserService service, UserDTO userDto) => service.SignIn(userDto)).WithSummary("Logs in");
 
-        group.MapPost("/signout", (IUserService service) => service.SignOut()).WithSummary("Logs out");
+        group.MapPost("/signout", (IUserService service) => service.SignOut())
+        .WithSummary("Logs out")
+        .RequireAuthorization(a => a.RequireAuthenticatedUser());
     }
 }
