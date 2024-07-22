@@ -1,7 +1,7 @@
-namespace TodoApiLocalAuth.Todos;
+namespace TodoApiLocalAuth.Todos.DTO;
 
 public record TodoDTO
 {
-    public string? Title {get; init;}
-    public bool IsDone {get; init;}
+    public required string Title { get; set; }
+    public bool IsDone { get; set; } = false;
 }
