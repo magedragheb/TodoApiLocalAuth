@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using TodoApiLocalAuth.Todos;
-using TodoApiLocalAuth.Users;
+using TodoApiLocalAuth.Todos.Entity;
+using TodoApiLocalAuth.Users.Entity;
 
 namespace TodoApiLocalAuth.Data;
 
