@@ -1,17 +1,22 @@
 using System.Reflection;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using TodoApiLocalAuth.Data;
 using TodoApiLocalAuth.Endpoints;
+using TodoApiLocalAuth.Todos.Repo;
+using TodoApiLocalAuth.Todos.Service;
+using TodoApiLocalAuth.Users.Repo;
+using TodoApiLocalAuth.Users.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<TodoDbContext>(options =>
     options.UseSqlite("Data Source=Data/todo.db"));
-builder.Services.Configure<JsonOptions>(options =>
-    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddTransient<ITodoService, TodoService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<ITodoRepo, TodoRepo>();
+builder.Services.AddTransient<IUserRepo, UserRepo>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 builder.Services.AddEndpointsApiExplorer();
